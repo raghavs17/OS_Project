@@ -141,9 +141,38 @@ void rRobin(int n, struct process p[])
 	    	i=0; 
 	}
 }
+void fcfs(int n, struct process p[]) {
+		float wTime[30], taTime[30];
+        float avgWaitTime = 0.0, avgTaTime = 0.0;
+        int c, j, nop=n;
+        wTime[0] = 0;   
+        for(c = 1; c < nop; c++)
+        {
+                wTime[c] = 0;
+                for(j = 0; j < c; j++)
+                {
+                        wTime[c] = wTime[c] + p[j].burst ;
+                }
+        }
+        printf("\nProcess\t\tWaiting Time\tTurnaround Time\n");
+        for(c = 0; c < nop; c++)
+        {
+                taTime[c] = p[c].burst + wTime[c];
+                avgWaitTime = avgWaitTime + wTime[c];
+                avgTaTime = avgTaTime + taTime[c];
+                printf("\nProcess [%d]\t\t%.2f\t\t%.2f", p[c].id, wTime[c], taTime[c]);
+        }
+        printf("\n");
+        avgWaitTime = avgWaitTime / c;
+        avgTaTime = avgTaTime / c;
+}
 void s1()
 {
 	rRobin(r1+1, q1) ;
+}
+void s3()
+{
+	fcfs(r3+1, q3) ;
 }
 int main()
 	{
@@ -158,4 +187,5 @@ int main()
 	putinQueue(n,p);
 	displayQueue();
 	s1();
+	s3();
 	}
