@@ -1,5 +1,5 @@
 #include<stdio.h>
-#include<conio.h>
+//#include<conio.h>
 struct process
 {
 		int priority;
@@ -89,7 +89,58 @@ void putinQueue(int n, struct process p[])
 }
 void displayQueue()
 {
-	int i ;
+	int i,j;
+	for(i=0;i<r1;i++)
+	{
+		for(j=0;j<r1-i;j++)
+		{
+
+			if(q1[j].arrival>q1[j+1].arrival)
+			{
+				struct process P2=q1[j];
+				q1[j]=q1[j+1];
+				q1[j+1]=P2;
+			}
+		}
+	}
+	for(i=0;i<r3;i++)
+	{
+		for(j=0;j<r3-i;j++)
+		{
+
+			if(q3[j].arrival>q3[j+1].arrival)
+			{
+				struct process P2=q3[j];
+				q3[j]=q3[j+1];
+				q3[j+1]=P2;
+			}
+		}
+	}
+	for(i=0;i<r2;i++)
+	{
+		for(j=0;j<r2-i;j++)
+		{
+
+			if(q2[j].arrival>q2[j+1].arrival)
+			{
+				struct process P2=q2[j];
+				q2[j]=q2[j+1];
+				q2[j+1]=P2;
+			}
+		}
+	}
+	for(i=0;i<r2;i++)
+	{
+		if(q2[i].arrival==q2[i+1].arrival)
+		{
+			if(q2[i+1].priority<q2[i].priority)
+			{
+				int temp=q2[i].priority;
+				q2[i].priority=q2[i+1].priority;
+				q2[i+1].priority=temp;
+			}
+		}
+	}
 	printf("Queue 1 : ") ;
 	for(i=0;i<=r1;i++)
 	{
@@ -141,11 +192,12 @@ void rRobin(int n, struct process p[])
 	    	i=0; 
 	}
 }
-void fcfs(int n, struct process p[]) {
+void priority(int n, struct process p[])
+{
 		float wTime[30], taTime[30];
         float avgWaitTime = 0.0, avgTaTime = 0.0;
         int c, j, nop=n;
-        wTime[0] = 0;   
+        wTime[0] = 0;
         for(c = 1; c < nop; c++)
         {
                 wTime[c] = 0;
@@ -163,12 +215,41 @@ void fcfs(int n, struct process p[]) {
                 printf("\nProcess [%d]\t\t%.2f\t\t%.2f", p[c].id, wTime[c], taTime[c]);
         }
         printf("\n");
-        avgWaitTime = avgWaitTime / c;
-        avgTaTime = avgTaTime / c;
+        avgWaitTime = avgWaitTime/c;
+        avgTaTime = avgTaTime/c;
+}
+void fcfs(int n, struct process p[]) {
+		float wTime[30], taTime[30];
+        float avgWaitTime = 0.0, avgTaTime = 0.0;
+        int c, j, nop=n;
+        wTime[0] = 0;
+        for(c = 1; c < nop; c++)
+        {
+                wTime[c] = 0;
+                for(j = 0; j < c; j++)
+                {
+                        wTime[c] = wTime[c] + p[j].burst ;
+                }
+        }
+        printf("\nProcess\t\tWaiting Time\tTurnaround Time\n");
+        for(c = 0; c < nop; c++)
+        {
+                taTime[c] = p[c].burst + wTime[c];
+                avgWaitTime = avgWaitTime + wTime[c];
+                avgTaTime = avgTaTime + taTime[c];
+                printf("\nProcess [%d]\t\t%.2f\t\t%.2f", p[c].id, wTime[c], taTime[c]);
+        }
+        printf("\n");
+        avgWaitTime = avgWaitTime/c;
+        avgTaTime = avgTaTime/c;
 }
 void s1()
 {
 	rRobin(r1+1, q1) ;
+}
+void s2()
+{
+	priority(r2+1,q2);
 }
 void s3()
 {
@@ -187,5 +268,6 @@ int main()
 	putinQueue(n,p);
 	displayQueue();
 	s1();
+	s2();
 	s3();
 	}
