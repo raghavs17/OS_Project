@@ -1,5 +1,6 @@
 #include<stdio.h>
-//#include<conio.h>
+#include<conio.h>
+#include<windows.h>
 struct process
 {
 		int priority;
@@ -7,267 +8,339 @@ struct process
 		int burst;
 		int arrival;
 		int response;
-};
-int r1=-1,r2=-1,r3=-1;
-int f1=-1,f2=-1,f3=-1;
-struct process q1[100], q2[100], q3[100] ;
-void create(int n, struct process p[])
+		int wait;
+		int turnaround;
+		int non;
+		int time;
+		process *link;
+}
+*p=NULL,*q1 = NULL, *q2 = NULL, *q3 = NULL,
+*start=NULL,*start1=NULL,*start2=NULL,*start3=NULL,
+*ptr=NULL,*ptr1=NULL,*ptr2=NULL,*ptr3=NULL,
+*lptr=NULL,*temp=NULL;
+int time=1;
+void create()
 {	
-	int i;
-	for(i=0; i<n; i++)
+	p=new process;
+	printf("\n\nEnter Process ID : ") ;
+	scanf("%d",&(p->id)) ;
+	printf("Enter Arrival Time : ") ;
+	scanf("%d",&(p->arrival)) ;
+	printf("Enter Burst Time : ") ;
+	scanf("%d",&(p->burst)) ;
+	if ((p->burst <= 0) || p->arrival < 0)
+   	{
+       printf("Wrong process details entered\n");
+       exit(0);
+    }
+	printf("Enter Priority : ") ;
+	scanf("%d",&(p->priority)) ;
+	p->response = p->burst ;
+	p->wait=0;
+	p->turnaround=0;
+	if(start==NULL){
+        start=p;
+    }
+    else
 	{
-		printf("\n\nFor process : %d \n",i+1);
-		printf("\n\nEnter Process ID : ") ;
-		scanf("%d",&p[i].id) ;
-		printf("Enter Arrival Time : ") ;
-		scanf("%d",&p[i].arrival) ;
-		printf("Enter Burst Time : ") ;
-		scanf("%d",&p[i].burst) ;
-		printf("Enter Priority : ") ;
-		scanf("%d",&p[i].priority) ;
-		p[i].response = p[i].burst ;
-	}
-}
-void show(int n, struct process p[])
-{
-	int i;
-	for(i=0; i<n; i++)
-	{
-		printf("\n\nProcess ID : ") ;
-		printf("%d\n",p[i].id) ;
-		printf("Arrival Time : ") ;
-		printf("%d\n",p[i].arrival) ;
-		printf("Burst Time : ") ;
-		printf("%d\n",p[i].burst) ;
-		printf("Priority : ") ;
-		printf("%d\n\n",p[i].priority) ;
-	}
-}
-void pushInq1(struct process p)
-{
-	if(f1 ==-1)
-	{
-		f1=0 ;
-	}
-	r1 = r1+1;
-	q1[r1] = p;
-}
-void pushInq2(struct process p)
-{
-	if(f2 == -1) {
-		f2 = 0 ;
-	}
-	r2 = r2 + 1 ;
-	q2[r2] = p ;
-}
-void pushInq3(struct process p)
-{
-	if(f3 == -1) {
-		f3 = 0 ;
-	}
-	r3 = r3 + 1 ;
-	q3[r3] = p ;
-}
-void putinQueue(int n, struct process p[])
-{
-	int i ;
-	for(i=0; i<n; i++)
-	{
-		if((p[i].priority)>=1 && (p[i].priority)<20)
+        ptr=start;
+        while(ptr->link!=NULL)
 		{
-			pushInq1(p[i]) ;
+            ptr=ptr->link;
+        }
+        ptr->link=p;
+    }
+}
+void traverse()
+{
+    p=start;
+    printf("Process Id\tArrival Time\tBurst Time\tPriority\n");
+    while(p!=NULL)
+	{
+        printf("P%d\t\t%d\t\t%d\t\t%d\n",p->id,p->arrival,p->burst,p->priority);
+        p=p->link;
+    }
+}
+void traverse1()
+{
+    q1=start1;
+    printf("Process Id\tArrival Time\tBurst Time\tPriority\n");
+    while(q1!=NULL)
+	{
+        printf("P%d\t\t%d\t\t%d\t\t%d\n",q1->id,q1->arrival,q1->burst,q1->priority);
+        q1=q1->link;
+    }
+}
+void traverse2()
+{
+    q2=start2;
+    printf("Process Id\tArrival Time\tBurst Time\tPriority\n");
+    while(q2!=NULL)
+	{
+        printf("P%d\t\t%d\t\t%d\t\t%d\n",q2->id,q2->arrival,q2->burst,q2->priority);
+        q2=q2->link;
+    }
+}
+void traverse3()
+{
+    q3=start3;
+    printf("Process Id\tArrival Time\tBurst Time\tPriority\n");
+    while(q3!=NULL)
+	{
+        printf("P%d\t\t%d\t\t%d\t\t%d\n",q3->id,q3->arrival,q3->burst,q3->priority);
+        q3=q3->link;
+    }
+}
+void putinQueue()
+{
+	int non1=0,non2=0,non3=0;
+	p=start;
+	while(p!=NULL)
+	{
+	if((p->priority)>=1 && (p->priority)<=20)
+	{
+		non1++;
+		q1=new process;
+		q1->id=p->id;
+		q1->arrival=p->arrival;
+		q1->burst=p->burst;
+		q1->priority=p->priority;
+		if(start1==NULL)
+		{
+        	start1=q1;
+    	}
+    	else
+		{
+        	ptr1=start1;
+        	while(ptr1->link!=NULL)
+			{
+            	ptr1=ptr1->link;
+        	}
+        	ptr1->link=q1;
+    	}
+	}
+	else if((p->priority)>=21 && (p->priority)<=40)
+	{
+		non2++;
+		q2=new process;
+		q2->id=p->id;
+		q2->arrival=p->arrival;
+		q2->burst=p->burst;
+		q2->priority=p->priority;
+		if(start2==NULL)
+		{
+        	start2=q2;
+    	}
+    	else
+		{
+        	ptr2=start2;
+        	while(ptr2->link!=NULL)
+			{
+            	ptr2=ptr2->link;
+        	}
+        	ptr2->link=q2;
+    	}
+	}
+	else
+	{
+		non3++;
+		q3=new process;
+		q3->id=p->id;
+		q3->arrival=p->arrival;
+		q3->burst=p->burst;
+		q3->priority=p->priority;
+		if(start3==NULL)
+		{
+        	start3=q3;
+    	}
+    	else
+		{
+        	ptr3=start3;
+        	while(ptr3->link!=NULL)
+			{
+            	ptr3=ptr3->link;
+        	}
+        	ptr3->link=q3;
+    	}
+	}
+	p=p->link;
+	}
+	q1->non=non1;
+	q2->non=non2;
+	q3->non=non3;
+}
+void swap(struct process *a, struct process *b)
+{
+    int temp = a->id;
+    a->id = b->id;
+    b->id = temp;
+    temp=a->arrival;
+    a->arrival=b->arrival;
+    b->arrival=temp;
+    temp=a->burst;
+    a->burst=b->burst;
+    b->burst=temp;
+    temp=a->priority;
+    a->priority=b->priority;
+    b->priority=temp;
+}
+void sort1()
+{
+	ptr1=start1;
+	lptr=NULL;
+    while(ptr1!=lptr)
+    {
+        while (ptr1->link != NULL)
+        {
+            if (ptr1->arrival > ptr1->link->arrival)
+            { 
+                swap(ptr1, ptr1->link);
+            }
+            ptr1 = ptr1->link;
 		}
-		else if ((p[i].priority)>=20 && (p[i].priority)<40)
-		{
-			pushInq2(p[i]) ;
-		}
-		else if ((p[i].priority)>=40 && (p[i].priority)<60)
-		{
-			pushInq3(p[i]) ;
-		} 
-	}	
+		lptr=ptr1;
+    }
 }
-void displayQueue()
+/*void sort2()
 {
-	int i,j;
-	for(i=0;i<r1;i++)
-	{
-		for(j=0;j<r1-i;j++)
-		{
+	ptr2=start2;
+	lptr=NULL;
+    while(ptr2!=lptr)
+    {
+        while (ptr2->link != NULL)
+        {
+            if (ptr2->arrival > ptr2->link->arrival)
+            { 
+                swap(ptr2, ptr2->link);
+            }
+            ptr2 = ptr2->link;
+		}
+		lptr=ptr2;
+    }
+	ptr2=start2;
+	lptr=NULL;
+    while(ptr2!=lptr)
+    {
+        while (ptr2->link != NULL)
+        {
+            if (ptr2->priority > ptr2->link->priority)
+            { 
+                swap(ptr2, ptr2->link);
+            }
+            ptr2 = ptr2->link;
+		}
+		lptr=ptr2;
+    }
+}
+*/
+void sort3()
+{
+	ptr3=start3;
+	lptr=NULL;
+    while(ptr3!=lptr)
+    {
+        while (ptr3->link != NULL)
+        {
+            if (ptr3->arrival > ptr3->link->arrival)
+            { 
+                swap(ptr3, ptr3->link);
+            }
+            ptr3 = ptr3->link;
+		}
+		lptr=ptr3;
+    }
+}
 
-			if(q1[j].arrival>q1[j+1].arrival)
-			{
-				struct process P2=q1[j];
-				q1[j]=q1[j+1];
-				q1[j+1]=P2;
-			}
-		}
-	}
-	for(i=0;i<r3;i++)
-	{
-		for(j=0;j<r3-i;j++)
-		{
-
-			if(q3[j].arrival>q3[j+1].arrival)
-			{
-				struct process P2=q3[j];
-				q3[j]=q3[j+1];
-				q3[j+1]=P2;
-			}
-		}
-	}
-	for(i=0;i<r2;i++)
-	{
-		for(j=0;j<r2-i;j++)
-		{
-
-			if(q2[j].arrival>q2[j+1].arrival)
-			{
-				struct process P2=q2[j];
-				q2[j]=q2[j+1];
-				q2[j+1]=P2;
-			}
-		}
-	}
-	for(i=0;i<r2;i++)
-	{
-		if(q2[i].arrival==q2[i+1].arrival)
-		{
-			if(q2[i+1].priority<q2[i].priority)
-			{
-				int temp=q2[i].priority;
-				q2[i].priority=q2[i+1].priority;
-				q2[i+1].priority=temp;
-			}
-		}
-	}
-	printf("Queue 1 : ") ;
-	for(i=0;i<=r1;i++)
-	{
-		printf("P%d  ",q1[i].id) ;
-	}
-	printf("\nQueue 2 : ") ;
-	for(i=0;i<=r2;i++)
-	{
-		printf("P%d  ",q2[i].id) ;
-	}
-	printf("\nQueue 3 : ") ;
-	for(i=0;i<=r3;i++)
-	{
-		printf("P%d  ",q3[i].id) ;
-	}
-	printf("\n") ;
-}
-void rRobin(int n, struct process p[])
+void rRobin()
 {
-	int i,j,time,remaining=n,flag=0,quanta = 4,wTime=0,taTime=0 ;
-	
+	while(time<=10)
+	{
+	q1=start1;
+	int time1 =0,flag=0,quanta = 4,wTime=0,taTime=0 ;
 	printf("\n\nProcess\t\tWaiting Time    Turnaround Time\n\n"); 
-  	for(time=0,i=0;remaining!=0;)
-	  {  	 
-	    if((p[i].response<=quanta) && (p[i].response)>0)
+  	for(time1=0;q1->burst!=0 && q1!=NULL;)
+	{  	 
+	    if((q1->burst<=quanta) && (q1->burst)>0)
 		{ 
-			time+=(p[i].response); 
-	      	(p[i].response)=0; 
+			time1=time1+q1->burst; 
+	    	q1->burst=0; 
 	      	flag=1; 
 	    }
-		else if((p[i].response)>0)
-		{ 
-			(p[i].response)-=quanta; 
-			time+=quanta; 
-	    }
-		if((p[i].response)==0 && flag==1)
-		{ 
-		    remaining--; 
-			printf("Process[%d]\t\t%d\t\t%d\n",p[i].id,time-((p[i].arrival)-(p[i].burst)),time-(p[i].arrival)); 
-		    wTime+=time-(p[i].arrival)-(p[i].burst); 
-			taTime+=time-(p[i].arrival); 
-		    flag=0; 
-	    }
-		if(i==n-1) 
-	    	i=0; 
-	    else if((p[i+1].arrival)<=time) 
-	    	i++; 
-	    else 
-	    	i=0; 
+	    else if(q1->burst>quanta)
+	    {
+	    	q1->burst=(q1->burst)-quanta;
+	    	time1=time1+4;
+		}
+		q1=q1->link;
+	}
+	time++;
 	}
 }
-void priority(int n, struct process p[])
+void priority()
 {
-		float wTime[30], taTime[30];
-        float avgWaitTime = 0.0, avgTaTime = 0.0;
-        int c, j, nop=n;
-        wTime[0] = 0;
-        for(c = 1; c < nop; c++)
-        {
-                wTime[c] = 0;
-                for(j = 0; j < c; j++)
-                {
-                        wTime[c] = wTime[c] + p[j].burst ;
-                }
-        }
-        printf("\nProcess\t\tWaiting Time\tTurnaround Time\n");
-        for(c = 0; c < nop; c++)
-        {
-                taTime[c] = p[c].burst + wTime[c];
-                avgWaitTime = avgWaitTime + wTime[c];
-                avgTaTime = avgTaTime + taTime[c];
-                printf("\nProcess [%d]\t\t%.2f\t\t%.2f", p[c].id, wTime[c], taTime[c]);
-        }
-        printf("\n");
-        avgWaitTime = avgWaitTime/c;
-        avgTaTime = avgTaTime/c;
+	q2=start2;
+	int i;
+	temp=q2;
+	//int ar=q2->arrival;
+	while(q2!=NULL)
+	{
+	for(i=0;i<q2->non;i++)
+	{
+		q2=q2->link;
+		if(q2->priority<temp->priority && q2->arrival<temp->arrival)
+		{
+			temp=q2;
+		}
+	}
+	if((q2->burst)>0)
+	{
+		time++;
+	   	q2->burst=(q2->burst)-1; 
+	}
+	}
 }
-void fcfs(int n, struct process p[]) {
-		float wTime[30], taTime[30];
-        float avgWaitTime = 0.0, avgTaTime = 0.0;
-        int c, j, nop=n;
-        wTime[0] = 0;
-        for(c = 1; c < nop; c++)
-        {
-                wTime[c] = 0;
-                for(j = 0; j < c; j++)
-                {
-                        wTime[c] = wTime[c] + p[j].burst ;
-                }
-        }
-        printf("\nProcess\t\tWaiting Time\tTurnaround Time\n");
-        for(c = 0; c < nop; c++)
-        {
-                taTime[c] = p[c].burst + wTime[c];
-                avgWaitTime = avgWaitTime + wTime[c];
-                avgTaTime = avgTaTime + taTime[c];
-                printf("\nProcess [%d]\t\t%.2f\t\t%.2f", p[c].id, wTime[c], taTime[c]);
-        }
-        printf("\n");
-        avgWaitTime = avgWaitTime/c;
-        avgTaTime = avgTaTime/c;
-}
-void s1()
+void fcfs()
 {
-	rRobin(r1+1, q1) ;
-}
-void s2()
-{
-	priority(r2+1,q2);
-}
-void s3()
-{
-	fcfs(r3+1, q3) ;
+	q3=start3;
+	int time=q2->time;
+	for(time;time<time+10 && q3!=NULL;time)
+	{
+		if(q3->burst!=0)
+		{
+		time++;
+		q3->burst=(q3->burst)-1;
+		}
+		else
+		{
+			q3=q3->link;
+		}
+	}
 }
 int main()
-	{
-	int n ;
+{
+	int n,i;
 	printf("Enter no of Processes : ") ;
 	scanf("%d",&n) ;
-	struct process p[n] ;
+	if (n <= 1)
+   	{
+       printf("No. of processes is less than 2");
+       exit(0);
+   	}
 	printf("\n\nCreate %d processes : \n\n",n);
-	create(n,p) ;
-	printf("Displaying %d processes : \n",n);
-	show(n,p);
-	putinQueue(n,p);
-	displayQueue();
-	s1();
-	s2();
-	s3();
+	for(i=0;i<n;i++)
+	{
+	create();
 	}
+	printf("Displaying %d processes : \n",n);
+	traverse();
+	putinQueue();
+	printf("\n\n\nAll processes placed in Queue's according to their priority range.\n\n\n");
+	traverse1();
+	traverse2();
+	traverse3();
+	sort1();
+	traverse1();
+	traverse2();
+	sort3();
+	traverse3();
+}
